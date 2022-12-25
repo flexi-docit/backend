@@ -1,4 +1,4 @@
-# AMS - backend
+# Blog APIs
 
 ## ENVIROMENT VARIABLES
 
