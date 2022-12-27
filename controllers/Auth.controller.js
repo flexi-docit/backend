@@ -15,8 +15,7 @@ exports.signup = async (req, res, next) => {
         password &&
         name &&
         username.length > 0 &&
-        password.length > 0 &&
-        name.length > 5
+        password.length > 0
       ) {
         if (isStrongPassword(password)) {
           const user = await User.findOne({

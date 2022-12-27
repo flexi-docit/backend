@@ -10,7 +10,13 @@ module.exports = async (req, res, next) => {
       const token =
         req.headers.authorization && req.headers.authorization.split(" ")[1];
       if (token) {
-        const tokenData = jwt.verify(token, process.env.JWT_SECRET);
+        let tokenData;
+        try {
+          tokenData = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (err) {
+          next(createError(401, "Invalid Token"));
+          return;
+        }
         if (tokenData) {
           const user = await User.findOne({
             where: { id: tokenData.id },
