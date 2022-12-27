@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
 });
 
 router.use("/auth", auth);
-router.use("/post", post);
+router.use("/posts", post);
 router.use("/users", user);
 router.use("/comments", comments);
 
