@@ -1,9 +1,9 @@
 {
-  "name": "ams_backend",
+  "name": "blog_apis",
   "version": "1.0.0",
   "main": "index.js",
   "private": false,
-  "repository": "https://github.com/sit-ams/ams-backend",
+  "repository": "https://github.com/Achyut-0705/Blog-Apis",
   "author": "Achyut Shukla",
   "license": "MIT",
   "jest": {
