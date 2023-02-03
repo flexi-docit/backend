@@ -1,9 +1,9 @@
 {
-  "name": "blog_apis",
+  "name": "lmb-backend",
   "version": "1.0.0",
   "main": "index.js",
   "private": false,
-  "repository": "https://github.com/Achyut-0705/Blog-Apis",
+  "repository": "https://github.com/flexi-lms/backend",
   "author": "Achyut Shukla",
   "license": "MIT",
   "jest": {
@@ -17,7 +17,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
-    "express-validator": "^6.14.2",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.8.0",

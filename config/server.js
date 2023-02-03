@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
   res.send({ ok: true, message: "Server is up" });
 });
 
-app.use("/api", v1);
+app.use("/api/v1", v1);
 
 app.use("*", (req, res) => {
   res.status(400).send({ ok: false, message: "Not Found" });
