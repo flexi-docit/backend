@@ -1,4 +1,4 @@
-exports.isStrongPassword = (password) => {
+const isStrongPassword = (password) => {
   /**
    * 8 to 15 characters
    * least one lowercase letter
@@ -11,3 +11,5 @@ exports.isStrongPassword = (password) => {
 
   return passwordRegex.test(password);
 };
+
+module.exports = isStrongPassword;

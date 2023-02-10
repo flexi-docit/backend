@@ -1,3 +1,3 @@
-const logger = require("bunyan").createLogger({ name: "LMB - Backend" });
+const logger = require("bunyan").createLogger({ name: "DocIt - Backend" });
 
 module.exports = logger;
