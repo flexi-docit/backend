@@ -13,4 +13,9 @@ This is the backend API for a Library Management System application built with N
 | DB_NAME     | `database name`        |
 | DB_HOST     | `database host`        |
 | DB_PORT     | `database port`        |
+| GMAIL_EMAIL     | `database port`        |
+| GMAIL_PASSWORD     | `database port`        |
+| FRONTEND_DOMAIN     | `database port`        |
 | JWT_SECRET  | `JWT secret key`       |
+| REDIS_HOST  | `JWT secret key`       |
+| REDIS_PORT  | `JWT secret key`       |
