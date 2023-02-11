@@ -2,23 +2,30 @@ version: "3.1"
 services:
   app:
     build: .
+    container_name: app
     ports:
       - "8000:8000"
     volumes:
       - .:/app
   postgres:
     image: postgres:14.1-alpine
+    container_name: database
     restart: always
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
+    volumes:
+      - ./app:/app
   # mongo:
   #   image: mongo
   #   ports:
   #     - "27017:27017"
-  # redis:
-  #   image: redis:alpine
-  #   ports:
-  #     - "6379:6379"
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./app:/app

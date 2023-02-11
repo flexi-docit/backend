@@ -165,15 +165,27 @@ exports.verifyEmail = async (req, res, next) => {
             }
           );
 
-          const emailStatus = await sendResetPassword(user.email, token);
+          const emailQueue = require("../queues/email.queue.js");
 
-          if (emailStatus) {
-            res
-              .status(200)
-              .send({ status: true, message: "Email sent successfully" });
-          } else {
-            next(createError(500, "Email sending failed"));
-          }
+          emailQueue.add({
+            to: user.email,
+            token,
+          });
+
+          res.send({
+            status: true,
+            message: "Email sent successfully",
+          });
+
+          // const emailStatus = await sendResetPassword(user.email, token);
+
+          // if (emailStatus) {
+          //   res
+          //     .status(200)
+          //     .send({ status: true, message: "Email sent successfully" });
+          // } else {
+          //   next(createError(500, "Email sending failed"));
+          // }
         } else {
           next(createError(404, "User not found"));
         }
