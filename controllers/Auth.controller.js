@@ -1,7 +1,6 @@
 const createError = require("http-errors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sendResetPassword } = require("../config/nodemailer.js");
 const db = require("../models/index.js");
 const sequelize = db.sequelize;
 const isValidEmail = require("../validators/email.js");
