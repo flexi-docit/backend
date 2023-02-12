@@ -8,11 +8,11 @@ This is the backend API for a Library Management System application built with N
 | --------------- | ----------------------- |
 | PORT            | 8000                    |
 | NODE_ENV        | development/production  |
-| DB_USERNAME     | `database username`     |
-| DB_PASSWORD     | `database password`     |
-| DB_NAME         | `database name`         |
-| DB_HOST         | `database host`         |
-| DB_PORT         | `database port`         |
+| POSTGRES_USER     | `database username`     |
+| POSTGRES_PASSWORD     | `database password`     |
+| POSTGRES_DB_NAME         | `database name`         |
+| POSTGRES_HOST         | `database host`         |
+| POSTGRES_PORT         | `database port`         |
 | GMAIL_EMAIL     | `Google email address`  |
 | GMAIL_PASSWORD  | `Google email password` |
 | FRONTEND_DOMAIN | `Frontend Domain`       |
