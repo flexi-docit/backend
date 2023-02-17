@@ -10,7 +10,6 @@ const emailQueue = new bull("email", {
 emailQueue.process(async (job) => {
   const { to, token } = job.data;
 
-  //   console.log({ to, token });
   const { sendResetPassword } = require("../config/nodemailer.js");
   await sendResetPassword(to, token);
 });

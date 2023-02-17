@@ -13,20 +13,20 @@ app.use(express.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
 
 app.get("/", (req, res) => {
-  res.send({ ok: true, message: "Server is up" });
+  res.send({ status: true, message: "Server is up" });
 });
 
 app.use("/api/v1", v1);
 
 app.use("*", (req, res) => {
-  res.status(400).send({ ok: false, message: "Not Found" });
+  res.status(400).send({ status: false, message: "Not Found" });
 });
 
 app.use((err, req, res, next) => {
   console.log(err.message);
   res.status(err.status || 500);
   res.send({
-    ok: false,
+    status: false,
     enviroment: process.env.NODE_ENV || "production",
     message:
       err.status === 403

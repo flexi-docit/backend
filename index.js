@@ -1,5 +1,4 @@
 const dotenv = require("dotenv");
-
 const app = require("./config/server.js");
 const db = require("./models/index.js");
 const { mail } = require("./config/nodemailer.js");
