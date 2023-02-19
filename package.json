@@ -41,6 +41,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js | bunyan",
     "test": "cross-env NODE_ENV=development jest --coverage --verbose --forceExit --detectOpenHandles --runInBand --testTimeout=10000 --collect-coverage",
+    "seed:users": "node scripts/Users.seed.js",
+    "seed:projects": "node scripts/Projects.seed.js",
     "lint": "prettier --check .",
     "format": "prettier --write .",
     "prepare": "husky install"
