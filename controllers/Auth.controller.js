@@ -7,6 +7,28 @@ const isValidEmail = require("../validators/email.js");
 const isValidPassword = require("../validators/password.js");
 const Users = db.Users;
 
+exports.decodeJWT = (req, res, next) => {
+  const token =
+    req.headers.authorization && req.headers.authorization.split(" ")[1];
+  if (token) {
+    try {
+      const tokenData = jwt.verify(token, process.env.JWT_SECRET);
+
+      res.status(200).json({
+        status: true,
+        message: "JWT decoded!",
+        data: {
+          role: tokenData.role,
+          id: tokenData.id,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+      return next(createError(401, "Invalid Token"));
+    }
+  } else return next(createError(401, "Token Not Found"));
+};
+
 exports.login = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {

@@ -3,6 +3,8 @@ const router = express.Router();
 
 const authController = require("../../../controllers/Auth.controller.js");
 
+router.get("/decode-jwt", authController.decodeJWT);
+
 router.post("/login", authController.login);
 
 router.post("/register", authController.register);
