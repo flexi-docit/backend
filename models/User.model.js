@@ -23,6 +23,11 @@ module.exports = (sequelize, Sequelize) => {
       values: ["Developer", "Team Lead", "Module Lead"],
       defaultValue: "Developer",
     },
+    verified: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
   });
 
   return user;

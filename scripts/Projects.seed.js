@@ -1,32 +1,16 @@
 const db = require("../models/index.js");
 
-const projects = [
-  {
-    name: "Project 1",
-    description: "Project 1 description",
+const projects = [];
+
+for (let i = 1; i <= 5; i += 1) {
+  projects.push({
+    name: `Project ${i}`,
+    description: `Project ${i} description`,
     lead_id: 1,
-  },
-  {
-    name: "Project 2",
-    description: "Project 2 description",
-    lead_id: 1,
-  },
-  {
-    name: "Project 3",
-    description: "Project 3 description",
-    lead_id: 1,
-  },
-  {
-    name: "Project 4",
-    description: "Project 4 description",
-    lead_id: 1,
-  },
-  {
-    name: "Project 5",
-    description: "Project 5 description",
-    lead_id: 1,
-  },
-];
+  });
+}
+
+db.Projects.create(projects[0]);
 
 (async () => {
   await db.Projects.bulkCreate(projects);
