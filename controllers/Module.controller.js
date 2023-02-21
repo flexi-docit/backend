@@ -1,15 +1,19 @@
 const createError = require("http-errors");
+// const { Module_Tags } = require("../models/index.js");
 const db = require("../models/index.js");
 const sequelize = db.sequelize;
 const Projects = db.Projects;
 const Modules = db.Modules;
 const Users = db.Users;
+const Tags = db.Tags;
+const Module_Tags = db.Module_Tags;
+const Op = db.Sequelize.Op;
 
 exports.createModule = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {
       // Your code here
-      const { name, description, project_id } = req.body;
+      const { name, description, project_id, tagList } = req.body;
 
       if (
         name &&
@@ -17,14 +21,28 @@ exports.createModule = async (req, res, next) => {
         description &&
         description.trim().length > 0 &&
         project_id &&
-        project_id > 0
+        project_id > 0 &&
+        tagList &&
+        Array.isArray(tagList)
       ) {
-        const project = await Projects.findOne({
-          where: { id: project_id },
-          transaction,
-        });
-        if (project) {
-          const projectModule = await Modules.create(
+        const [projectModule, tags] = await Promise.all([
+          await Projects.findOne({
+            where: { id: project_id },
+            transaction,
+          }),
+
+          await Tags.findAll({
+            where: {
+              id: {
+                [Op.in]: tagList,
+              },
+            },
+            transaction,
+          }),
+        ]);
+
+        if (projectModule && tags.length === tagList.length) {
+          const moduleData = await Modules.create(
             {
               name: name,
               description: description,
@@ -33,14 +51,21 @@ exports.createModule = async (req, res, next) => {
             },
             transaction
           );
-
+          await Module_Tags.bulkCreate(
+            tagList.map((item) => {
+              return {
+                module_id: moduleData.id,
+                tag_id: item,
+              };
+            })
+          );
           res.send({
             status: true,
             message: "Module created successfully",
-            data: { module_id: projectModule.id },
+            data: { module_id: moduleData.id },
           });
         } else {
-          next(createError(404, "Project not found"));
+          next(createError(404, "Project or Tags not found"));
         }
       } else {
         next(createError(400, "Invalid/Insufficient data"));

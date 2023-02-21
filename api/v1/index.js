@@ -4,6 +4,7 @@ const router = express.Router();
 const auth = require("./Auth/index.js");
 const project = require("./Projects/index.js");
 const modules = require("./Modules/index.js");
+const tags = require("./Tags/index.js");
 const module_tags = require("./Module Tags/index.js");
 
 router.get("/", (req, res) => {
@@ -13,6 +14,7 @@ router.get("/", (req, res) => {
 router.use("/auth", auth);
 router.use("/project", project);
 router.use("/module", modules);
-router.use("/tag", module_tags);
+router.use("/module/tag", module_tags);
+router.use("/tag", tags);
 
 module.exports = router;

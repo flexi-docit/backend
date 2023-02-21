@@ -2,12 +2,6 @@ const express = require("express");
 const router = express.Router();
 
 const authmiddlewere = require("../../../middlewares/auth.middleware.js");
-const tags = require("../../../controllers/Module_tags.controller.js");
-
-// create new module tag
-router.post("/", authmiddlewere(["Team Lead"]), tags.createTag);
-
-// delete a tag
-router.delete("/:id", authmiddlewere(["Team Lead"]), tags.deleteTag);
+const module_tags = require("../../../controllers/Tags.controller.js");
 
 module.exports = router;
