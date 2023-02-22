@@ -14,7 +14,7 @@ exports.decodeJWT = (req, res, next) => {
     try {
       const tokenData = jwt.verify(token, process.env.JWT_SECRET);
 
-      res.status(200).json({
+      res.send({
         status: true,
         message: "JWT decoded!",
         data: {
@@ -23,10 +23,11 @@ exports.decodeJWT = (req, res, next) => {
         },
       });
     } catch (err) {
-      console.log(err);
       return next(createError(401, "Invalid Token"));
     }
-  } else return next(createError(401, "Token Not Found"));
+  } else{
+      next(createError(401, "Token Not Found"));
+    }
 };
 
 exports.login = async (req, res, next) => {
