@@ -8,11 +8,16 @@ const isValidPassword = require("../validators/password.js");
 const Users = db.Users;
 
 exports.decodeJWT = (req, res, next) => {
-  const token =
-    req.headers.authorization && req.headers.authorization.split(" ")[1];
-  if (token) {
-    try {
-      const tokenData = jwt.verify(token, process.env.JWT_SECRET);
+  try {
+    const token =
+      req.headers.authorization && req.headers.authorization.split(" ")[1];
+    if (token) {
+      let tokenData;
+      try {
+        tokenData = jwt.verify(token, process.env.JWT_SECRET);
+      } catch (err) {
+        return next(createError(401, "Invalid Token"));
+      }
 
       res.send({
         status: true,
@@ -22,12 +27,12 @@ exports.decodeJWT = (req, res, next) => {
           id: tokenData.id,
         },
       });
-    } catch (err) {
-      return next(createError(401, "Invalid Token"));
-    }
-  } else{
+    } else {
       next(createError(401, "Token Not Found"));
     }
+  } catch (err) {
+    next(createError(500, "Internal Server Error"));
+  }
 };
 
 exports.login = async (req, res, next) => {
@@ -119,9 +124,9 @@ exports.forgotPassword = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {
       const { token } = req.params;
-      const { password } = req.body;
+      const { password, confirmPassword } = req.body;
 
-      if (isValidPassword(password)) {
+      if (password === confirmPassword && isValidPassword(password)) {
         const tokenData = jwt.verify(token, process.env.JWT_SECRET);
 
         if (tokenData) {

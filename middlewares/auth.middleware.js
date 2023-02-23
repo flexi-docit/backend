@@ -4,6 +4,10 @@ const db = require("../models/index.js");
 const User = db.Users;
 const sequelize = db.sequelize;
 
+/**
+ * allowed roles: Team Lead, Module Lead, Developer
+ */
+
 module.exports = (role) => {
   return async (req, res, next) => {
     try {

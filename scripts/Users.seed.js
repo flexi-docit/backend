@@ -1,5 +1,5 @@
 const db = require("../models/index.js");
-const sequelize = db.sequelize;
+// const sequelize = db.sequelize;
 
 const users = [
   {
@@ -34,8 +34,4 @@ const users = [
   },
 ];
 
-(async () => {
-  await db.Users.bulkCreate(users);
-  console.log("Data seeded successfully!");
-  process.exit();
-})();
+module.exports = users;

@@ -1,19 +1,19 @@
 const createError = require("http-errors");
-// const { Module_Tags } = require("../models/index.js");
 const db = require("../models/index.js");
 const sequelize = db.sequelize;
 const Projects = db.Projects;
 const Modules = db.Modules;
 const Users = db.Users;
 const Tags = db.Tags;
-const Module_Tags = db.Module_Tags;
 const Op = db.Sequelize.Op;
 
+// create a module and promote user(module lead)
 exports.createModule = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {
-      // Your code here
-      const { name, description, project_id, tagList } = req.body;
+      // data extraction and basic validation
+      const { name, description, project_id, module_lead_id, tagList } =
+        req.body;
 
       if (
         name &&
@@ -22,10 +22,13 @@ exports.createModule = async (req, res, next) => {
         description.trim().length > 0 &&
         project_id &&
         project_id > 0 &&
+        module_lead_id &&
+        module_lead_id > 0 &&
         tagList &&
         Array.isArray(tagList)
       ) {
-        const [projectModule, tags] = await Promise.all([
+        // fetch project details, list of tags(if present or not) and module lead data(user)
+        const [projectModule, tags, module_lead] = await Promise.all([
           await Projects.findOne({
             where: { id: project_id },
             transaction,
@@ -39,33 +42,49 @@ exports.createModule = async (req, res, next) => {
             },
             transaction,
           }),
+
+          await Users.findOne({
+            where: {
+              id: module_lead_id,
+            },
+            transaction,
+          }),
         ]);
 
-        if (projectModule && tags.length === tagList.length) {
+        if (projectModule && module_lead && tags.length === tagList.length) {
           const moduleData = await Modules.create(
             {
               name: name,
               description: description,
-              lead_id: req.user.id,
+              lead_id: module_lead_id,
               project_id: project_id,
             },
             transaction
           );
-          await Module_Tags.bulkCreate(
-            tagList.map((item) => {
-              return {
-                module_id: moduleData.id,
-                tag_id: item,
-              };
-            })
-          );
+          // await Module_Tags.bulkCreate(
+          //   tagList.map((item) => {
+          //     return {
+          //       module_id: moduleData.id,
+          //       tag_id: item,
+          //     };
+          //   }),
+          //   {
+          //     transaction,
+          //   }
+          // );
+
+          // modify user data if required
+          if (module_lead.role === "Developer") {
+            module_lead.role = "Module Lead";
+            await module_lead.save({ transaction });
+          }
           res.send({
             status: true,
             message: "Module created successfully",
             data: { module_id: moduleData.id },
           });
         } else {
-          next(createError(404, "Project or Tags not found"));
+          next(createError(404, "Invalid module details"));
         }
       } else {
         next(createError(400, "Invalid/Insufficient data"));
@@ -76,11 +95,24 @@ exports.createModule = async (req, res, next) => {
   }
 };
 
+/**
+ *
+ * @param {project_id, lead_id}* req.query
+ * @param {status} req.query
+ * 
+ * get all modules:
+     Of a project
+     Of a Module Lead
+ */
 exports.getAllModules = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {
-      // Your code here
-      const { project_id, lead_id, status } = req.query;
+      // get details of modules where by default module lead is current user
+      const {
+        project_id,
+        lead_id = req.user.role === "Module Lead" && req.user.id,
+        status,
+      } = req.query;
       if ((project_id && project_id > 0) || (lead_id && lead_id > 0)) {
         const where = {};
         const options = {
@@ -193,8 +225,6 @@ exports.updateModuleById = async (req, res, next) => {
         });
 
         if (moduleData) {
-          const condition = {};
-
           if (name && name.trim().length > 0) {
             moduleData.name = name;
           }

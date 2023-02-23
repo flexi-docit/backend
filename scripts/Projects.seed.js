@@ -6,14 +6,8 @@ for (let i = 1; i <= 5; i += 1) {
   projects.push({
     name: `Project ${i}`,
     description: `Project ${i} description`,
-    lead_id: 1,
+    lead_id: 5,
   });
 }
 
-db.Projects.create(projects[0]);
-
-(async () => {
-  await db.Projects.bulkCreate(projects);
-  console.log("Data seeded successfully!");
-  process.exit();
-})();
+module.exports = projects;
