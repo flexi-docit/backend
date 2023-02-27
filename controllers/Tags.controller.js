@@ -27,6 +27,20 @@ exports.createTag = async (req, res, next) => {
   }
 };
 
+exports.getAllTags = async (req, res, next) => {
+  try {
+    await sequelize.transaction(async (transaction) => {
+      // Your code here
+
+      const tags = await Tags.findAll({ transaction });
+
+      res.send({ status: true, data: { tags } });
+    });
+  } catch (err) {
+    next(createError(500, err));
+  }
+};
+
 exports.deleteTag = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {

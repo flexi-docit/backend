@@ -224,3 +224,20 @@ exports.verifyEmail = async (req, res, next) => {
     next(createError(500, err));
   }
 };
+
+exports.getAllEmployees = async (req, res, next) => {
+  try {
+    await sequelize.transaction(async (transaction) => {
+      // Your code here
+      const employees = await Users.findAll({
+        attributes: {
+          exclude: ["password"],
+        },
+      });
+
+      res.send({ status: true, data: { employees } });
+    });
+  } catch (err) {
+    next(createError(500, err));
+  }
+};

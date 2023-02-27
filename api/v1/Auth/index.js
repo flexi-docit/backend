@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const authController = require("../../../controllers/Auth.controller.js");
+const authMiddleWare = require("../../../middlewares/auth.middleware.js");
 
 // send role and id inside jwt token
 router.get("/decode-jwt", authController.decodeJWT);
@@ -17,5 +18,7 @@ router.post("/confirm/email", authController.verifyEmail);
 
 // reset password
 router.post("/reset-password/:token", authController.forgotPassword);
+
+router.get("/", authMiddleWare(["Team Lead"]), authController.getAllEmployees);
 
 module.exports = router;
