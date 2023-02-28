@@ -5,6 +5,7 @@ const Projects = db.Projects;
 const Modules = db.Modules;
 const Users = db.Users;
 const Tags = db.Tags;
+const ModuleTags = db.Module_Tags;
 const Op = db.Sequelize.Op;
 
 // create a module and promote user(module lead)
@@ -61,17 +62,25 @@ exports.createModule = async (req, res, next) => {
             },
             transaction
           );
-          // await Module_Tags.bulkCreate(
-          //   tagList.map((item) => {
-          //     return {
-          //       module_id: moduleData.id,
-          //       tag_id: item,
-          //     };
-          //   }),
-          //   {
-          //     transaction,
-          //   }
-          // );
+
+          console.log(
+            tagList.map((tag_id) => {
+              return {
+                tag_id: tag_id,
+                module_id: moduleData.id,
+              };
+            })
+          );
+
+          await ModuleTags.bulkCreate(
+            tagList.map((tag_id) => {
+              return {
+                tag_id: tag_id,
+                module_id: moduleData.id,
+              };
+            }),
+            { transaction }
+          );
 
           // modify user data if required
           if (module_lead.role === "Developer") {
@@ -130,9 +139,13 @@ exports.getAllModules = async (req, res, next) => {
                 exclude: ["lead_id"],
               },
             },
+            {
+              model: ModuleTags,
+              required: false,
+            },
           ],
           attributes: {
-            exclude: ["lead_id"],
+            exclude: ["project_id", "lead_id", "deletedAt"],
           },
         };
 
