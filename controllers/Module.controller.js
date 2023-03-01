@@ -232,12 +232,6 @@ exports.updateModuleById = async (req, res, next) => {
       const { id } = req.params;
 
       if (id && id > 0) {
-        // const moduleData = await Modules.findOne({
-        //   where: { id },
-        //   transaction,
-        // });
-
-        // get paranoid data as well for Modules
         const moduleData = await Modules.findOne({
           where: { id },
           paranoid: false,
