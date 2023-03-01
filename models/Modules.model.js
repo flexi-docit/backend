@@ -32,9 +32,14 @@ module.exports = (sequelize, Sequelize) => {
     {
       paranoid: true,
       hooks: {
-        beforeUpdate: async (instance) => {
+        beforeUpdate: async (instance, options) => {
           if (instance.status === "archived") {
             await instance.destroy();
+          } else if (
+            instance._previousDataValues.status === "archived" &&
+            instance.status !== "archived"
+          ) {
+            await instance.restore();
           }
           return instance;
         },

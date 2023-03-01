@@ -228,12 +228,19 @@ exports.updateModuleById = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {
       // Your code here
-      const { name, description, status, lead_id, project_id } = req.body;
+      const { name, description, status, lead_id, project_id, tags } = req.body;
       const { id } = req.params;
 
       if (id && id > 0) {
+        // const moduleData = await Modules.findOne({
+        //   where: { id },
+        //   transaction,
+        // });
+
+        // get paranoid data as well for Modules
         const moduleData = await Modules.findOne({
           where: { id },
+          paranoid: false,
           transaction,
         });
 
@@ -251,11 +258,60 @@ exports.updateModuleById = async (req, res, next) => {
           }
 
           if (lead_id && lead_id > 0) {
-            moduleData.lead_id = lead_id;
+            // moduleData.lead_id = lead_id;
+            const module_lead = await Users.findOne({
+              where: { id: lead_id },
+              transaction,
+            });
+
+            if (module_lead) {
+              if (module_lead.role === "Module Lead") {
+                moduleData.lead_id = lead_id;
+              } else {
+                next(createError(400, "Invalid module lead"));
+                return;
+              }
+            } else {
+              next(createError(404, "Invalid module lead id"));
+              return;
+            }
           }
 
           if (project_id && project_id > 0) {
             moduleData.project_id = project_id;
+          }
+
+          if (tags && tags.length > 0) {
+            const tagList = await Tags.findAll({
+              where: {
+                id: {
+                  [Op.in]: tags,
+                },
+              },
+              transaction,
+            });
+
+            if (tagList && tagList.length === tags.length) {
+              // replace all tags with new tags
+              await ModuleTags.destroy({
+                where: {
+                  module_id: id,
+                },
+                transaction,
+              });
+
+              const moduleTags = tags.map((tag) => {
+                return {
+                  module_id: id,
+                  tag_id: tag,
+                };
+              });
+
+              await ModuleTags.bulkCreate(moduleTags, { transaction });
+            } else {
+              next(createError(404, "Invalid tag ids"));
+              return;
+            }
           }
 
           await moduleData.save({ transaction });

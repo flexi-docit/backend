@@ -47,7 +47,6 @@ module.exports = (role) => {
       });
     } catch (err) {
       next(createError(500, "Internal server error"));
-      console.log(err);
     }
   };
 };

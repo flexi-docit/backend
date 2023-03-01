@@ -192,7 +192,7 @@ exports.verifyEmail = async (req, res, next) => {
             }
           );
 
-          const emailQueue = require("../queues/email.queue.js");
+          const emailQueue = require("../utils/queues/email.queue.js");
 
           emailQueue.add({
             to: user.email,

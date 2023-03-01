@@ -1,5 +1,3 @@
-const db = require("../models/index.js");
-
 const projects = [];
 
 for (let i = 1; i <= 5; i += 1) {
