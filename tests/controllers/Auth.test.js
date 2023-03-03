@@ -103,7 +103,7 @@ describe("Testing Auth Routes", () => {
       req.body = user;
 
       await authController.register(req, res, next);
-      console.log(next.mock.calls);
+      // console.log(next.mock.calls);
     }
 
     expect(req).toBeDefined();
