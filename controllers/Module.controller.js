@@ -142,6 +142,13 @@ exports.getAllModules = async (req, res, next) => {
             {
               model: ModuleTags,
               required: false,
+              // attributes: ["tag"],
+              include: [
+                {
+                  model: Tags,
+                  attributes: ["name", "id"],
+                },
+              ],
             },
           ],
           attributes: {
@@ -168,6 +175,20 @@ exports.getAllModules = async (req, res, next) => {
         });
 
         if (modules) {
+          const newModules = [];
+          modules.forEach((module) => {
+            const tags = [];
+            module.module_tags.forEach((moduleTag) => {
+              tags.push({
+                name: moduleTag.tag.name,
+                id: moduleTag.tag.id,
+              });
+              console.log(tags);
+            });
+            delete module.dataValues.module_tags;
+            module.dataValues.tags = tags;
+            newModules.push(module);
+          });
           res.send({ status: true, data: modules });
         } else {
           next(createError(404, "Project not found"));
@@ -205,6 +226,16 @@ exports.getModuleById = async (req, res, next) => {
                 exclude: ["lead_id"],
               },
             },
+            {
+              model: ModuleTags,
+              required: false,
+              include: [
+                {
+                  model: Tags,
+                  attributes: ["id", "name"],
+                },
+              ],
+            },
           ],
           attributes: {
             exclude: ["project_id", "lead_id"],
@@ -213,6 +244,17 @@ exports.getModuleById = async (req, res, next) => {
         });
 
         if (moduleData) {
+          const tagList = [];
+          const tags = moduleData.dataValues.module_tags;
+          // console.log(tags);
+          tags.forEach((tag) => {
+            tagList.push({
+              name: tag.tag.name,
+              id: tag.tag.id,
+            });
+          });
+          delete moduleData.dataValues.module_tags;
+          moduleData.dataValues.tags = tagList;
           res.send({ status: true, data: moduleData });
         } else {
           next(createError(404, "Module not found"));
