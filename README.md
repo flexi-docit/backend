@@ -9,6 +9,7 @@ This is the backend API for a Library Management System application built with N
 - Install dependencies: `npm i` or `yarn`
 - If using windows:
   - Add `/app/node_modules` in `app` service inside `docker-compose.yml`
+- Run: `npm run start` or `yarn start`
 
 ## ENVIROMENT VARIABLES
 
