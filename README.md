@@ -6,9 +6,11 @@ This is the backend API for a Library Management System application built with N
 
 - Clone this repo using `git clone https://github.com/flexi-docit/backend.git DocItBackend`
 - Move into cloned repo: `cd DocItBackend`
+- Checkout to `dev` branch: `git checkout dev`
 - Install dependencies: `npm i` or `yarn`
 - If using windows:
   - Add `/app/node_modules` in `app` service inside `docker-compose.yml`
+- Comment `username` and `password` in `utils/queues/email.queue.js` inside redis configuration
 
 ## ENVIROMENT VARIABLES
 
