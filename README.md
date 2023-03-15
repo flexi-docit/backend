@@ -2,6 +2,14 @@
 
 This is the backend API for a Library Management System application built with Node.js, Express, and Sequelize. It allows users to view, create, and delete blog posts.
 
+## Installation Guide
+
+- Clone this repo using `git clone https://github.com/flexi-docit/backend.git DocItBackend`
+- Move into cloned repo: `cd DocItBackend`
+- Install dependencies: `npm i` or `yarn`
+- If using windows:
+  - Add `/app/node_modules` in `app` service inside `docker-compose.yml`
+
 ## ENVIROMENT VARIABLES
 
 | Key               | Value                   |
@@ -19,3 +27,5 @@ This is the backend API for a Library Management System application built with N
 | JWT_SECRET        | `JWT secret key`        |
 | REDIS_HOST        | `Redis Server Host`     |
 | REDIS_PORT        | `Redis Server Port`     |
+| REDIS_USERNAME    | `Redis Server Username` |
+| REDIS_PASSWORD    | `Redis Server Password` |
