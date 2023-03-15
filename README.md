@@ -11,6 +11,7 @@ This is the backend API for a Library Management System application built with N
 - If using windows:
   - Add `/app/node_modules` in `app` service inside `docker-compose.yml`
 - Comment `username` and `password` in `utils/queues/email.queue.js` inside redis configuration
+- Run: `docker-compose up`
 
 ## ENVIROMENT VARIABLES
 
