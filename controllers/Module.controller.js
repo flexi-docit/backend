@@ -492,3 +492,45 @@ exports.removeDeveloperFromModule = async (req, res, next) => {
     next(createError(500, err));
   }
 };
+
+exports.getAllDevelopersOfModule = async (req, res, next) => {
+  try {
+    await sequelize.transaction(async (transaction) => {
+      // Your code here
+      const { module_id, project_id = 1 } = req.body;
+      if (module_id && project_id) {
+        const module = await Modules.findOne({
+          where: { id: module_id },
+          transaction,
+        });
+
+        if (module) {
+          const developers = await Developers.findAll({
+            where: { module_id, project_id },
+            include: [
+              {
+                model: Users,
+                attributes: {
+                  exclude: ["password"],
+                },
+              },
+            ],
+            transaction,
+          });
+
+          res.send({
+            status: true,
+            message: "Developers fetched successfully",
+            data: developers,
+          });
+        } else {
+          next(createError(404, "Module not found"));
+        }
+      } else {
+        next(createError(400, "Insufficient data"));
+      }
+    });
+  } catch (err) {
+    next(createError(500, err));
+  }
+};
