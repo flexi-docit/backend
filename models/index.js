@@ -35,6 +35,7 @@ db.Modules = require("./Modules.model.js")(sequelize, Sequelize);
 db.Tags = require("./Tags.model.js")(sequelize, Sequelize);
 db.Module_Tags = require("./Module_Tags.model.js")(sequelize, Sequelize);
 db.Developers = require("./Developers.model.js")(sequelize, Sequelize);
+db.Documents = require("./Document.model.js")(sequelize, Sequelize);
 
 // --------------Project User Asssoication--------------
 db.Users.hasMany(db.Projects, {
@@ -106,6 +107,15 @@ db.Users.hasMany(db.Developers, {
 
 db.Developers.belongsTo(db.Users, {
   foreignKey: "user_id",
+});
+
+// --------------Document Module Asssoication--------------
+db.Documents.belongsTo(db.Modules, {
+  foreignKey: "module_id",
+});
+
+db.Modules.hasMany(db.Documents, {
+  foreignKey: "module_id",
 });
 
 module.exports = db;
