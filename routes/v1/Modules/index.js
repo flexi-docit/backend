@@ -22,14 +22,14 @@ router.delete(
 // grant access to a developer to a module
 router.post(
   "/developer",
-  authMiddlewere(["Module Lead"]),
+  authMiddlewere(["Module Lead", "Team Lead"]),
   moduleControllers.addDeveloperToModule
 );
 
 // list all developers of a module
 router.get(
   "/developer",
-  authMiddlewere(["Module Lead"]),
+  authMiddlewere(["Module Lead", "Team Lead"]),
   moduleControllers.getAllDevelopersOfModule
 );
 
@@ -37,12 +37,12 @@ router.get(
 router.post("/", authMiddlewere(["Team Lead"]), moduleControllers.createModule);
 
 // get all modules of a project
-router.get("/", authMiddlewere(["Team Lead"]), moduleControllers.getAllModules);
+router.get("/", authMiddlewere(["Team Lead", "Module Lead"]), moduleControllers.getAllModules);
 
 // get module by id
 router.get(
   "/:id",
-  authMiddlewere(["Team Lead"]),
+  authMiddlewere(["Team Lead", "Module Lead"]),
   moduleControllers.getModuleById
 );
 

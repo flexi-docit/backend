@@ -95,7 +95,7 @@ exports.register = async (req, res, next) => {
           name: fullName,
           email,
           password: await bcrypt.hash(password, 12),
-          role: "Developer",
+          role: "Module Lead",
         };
 
         const user = await Users.findOne({

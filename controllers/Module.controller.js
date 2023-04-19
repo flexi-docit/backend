@@ -291,12 +291,12 @@ exports.updateModuleById = async (req, res, next) => {
             });
 
             if (module_lead) {
-              if (module_lead.role === "Module Lead") {
-                moduleData.lead_id = lead_id;
-              } else {
-                next(createError(400, "Invalid module lead"));
-                return;
-              }
+              // if (module_lead.role === "Module Lead") {
+              //   moduleData.lead_id = lead_id;
+              // } else {
+              //   next(createError(400, "Invalid module lead"));
+              //   return;
+              // }
             } else {
               next(createError(404, "Invalid module lead id"));
               return;
@@ -497,7 +497,7 @@ exports.getAllDevelopersOfModule = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {
       // Your code here
-      const { module_id, project_id = 1 } = req.body;
+      const { module_id, project_id = 1 } = req.query;
       if (module_id && project_id) {
         const module = await Modules.findOne({
           where: { id: module_id },

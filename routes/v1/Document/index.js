@@ -7,8 +7,14 @@ const documentController = require("../../../controllers/Document.controller.js"
 // create new document
 router.post(
   "/",
-  authMiddlewere(["Module Lead"]),
-  documentController.createDocument
+  authMiddlewere(["Module Lead", "Team Lead"]),
+  documentController.upsertDocument
+);
+
+router.get(
+  "/:id",
+  authMiddlewere(["Module Lead", "Team Lead"]),
+  documentController.getDocument
 );
 
 module.exports = router;

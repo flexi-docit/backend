@@ -30,6 +30,7 @@ module.exports = (role) => {
             if (user) {
               // check if user.role is present in role array
               if (role.includes(user.role)) {
+                console.log(role, user.role);
                 req.user = user;
                 next();
               } else {

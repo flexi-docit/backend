@@ -11,7 +11,11 @@ const app = express();
 
 app.use(express.json({ limit: "50mb", extended: true }));
 app.use(express.urlencoded({ limit: "50mb", extended: true }));
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 // serve public folder
 app.use(express.static(path.join(__dirname, "../public")));
 

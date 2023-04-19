@@ -8,7 +8,7 @@ const tags = require("../../../controllers/Tags.controller.js");
 router.post("/", authmiddlewere(["Team Lead"]), tags.createTag);
 
 // get all tags
-router.get("/", authmiddlewere(["Team Lead"]), tags.getAllTags);
+router.get("/", authmiddlewere(["Team Lead", "Module Lead"]), tags.getAllTags);
 
 // delete a tag
 router.delete("/:id", authmiddlewere(["Team Lead"]), tags.deleteTag);
