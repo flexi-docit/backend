@@ -37,7 +37,11 @@ router.get(
 router.post("/", authMiddlewere(["Team Lead"]), moduleControllers.createModule);
 
 // get all modules of a project
-router.get("/", authMiddlewere(["Team Lead", "Module Lead"]), moduleControllers.getAllModules);
+router.get(
+  "/",
+  authMiddlewere(["Team Lead", "Module Lead"]),
+  moduleControllers.getAllModules
+);
 
 // get module by id
 router.get(
