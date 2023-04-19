@@ -6,6 +6,7 @@ const Modules = db.Modules;
 const Users = db.Users;
 const Tags = db.Tags;
 const ModuleTags = db.Module_Tags;
+const Developers = db.Developers;
 const Op = db.Sequelize.Op;
 
 // create a module and promote user(module lead)
@@ -61,15 +62,6 @@ exports.createModule = async (req, res, next) => {
               project_id: project_id,
             },
             transaction
-          );
-
-          console.log(
-            tagList.map((tag_id) => {
-              return {
-                tag_id: tag_id,
-                module_id: moduleData.id,
-              };
-            })
           );
 
           await ModuleTags.bulkCreate(
@@ -183,7 +175,6 @@ exports.getAllModules = async (req, res, next) => {
                 name: moduleTag.tag.name,
                 id: moduleTag.tag.id,
               });
-              console.log(tags);
             });
             delete module.dataValues.module_tags;
             module.dataValues.tags = tags;
@@ -246,7 +237,6 @@ exports.getModuleById = async (req, res, next) => {
         if (moduleData) {
           const tagList = [];
           const tags = moduleData.dataValues.module_tags;
-          // console.log(tags);
           tags.forEach((tag) => {
             tagList.push({
               name: tag.tag.name,
@@ -301,12 +291,12 @@ exports.updateModuleById = async (req, res, next) => {
             });
 
             if (module_lead) {
-              if (module_lead.role === "Module Lead") {
-                moduleData.lead_id = lead_id;
-              } else {
-                next(createError(400, "Invalid module lead"));
-                return;
-              }
+              // if (module_lead.role === "Module Lead") {
+              //   moduleData.lead_id = lead_id;
+              // } else {
+              //   next(createError(400, "Invalid module lead"));
+              //   return;
+              // }
             } else {
               next(createError(404, "Invalid module lead id"));
               return;
@@ -392,6 +382,152 @@ exports.deleteModuleById = async (req, res, next) => {
         }
       } else {
         next(createError(400, "Invalid module id"));
+      }
+    });
+  } catch (err) {
+    next(createError(500, err));
+  }
+};
+
+exports.addDeveloperToModule = async (req, res, next) => {
+  try {
+    await sequelize.transaction(async (transaction) => {
+      const { module_id, developer_id, project_id = 1 } = req.body;
+      if (module_id && developer_id && project_id) {
+        const module = await Modules.findOne({
+          where: { id: module_id },
+          transaction,
+        });
+        if (module) {
+          if (req.user.id === module.lead_id) {
+            const developer = await Users.findOne({
+              where: { id: developer_id, role: "Developer" },
+              transaction,
+            });
+
+            if (developer) {
+              await Developers.create(
+                { module_id, project_id, user_id: developer_id },
+                { transaction }
+              );
+              res.send({
+                status: true,
+                message: "Developer added successfully",
+              });
+            } else {
+              next(createError(404, "Developer not found"));
+            }
+          } else {
+            next(createError(403, "Only module lead can add developers"));
+          }
+        } else {
+          next(createError(404, "Module not found"));
+        }
+      } else {
+        next(createError(400, "Insufficient data"));
+      }
+    });
+  } catch (err) {
+    next(createError(500, err));
+  }
+};
+
+exports.removeDeveloperFromModule = async (req, res, next) => {
+  try {
+    await sequelize.transaction(async (transaction) => {
+      const { module_id, developer_id, project_id = 1 } = req.body;
+      if (module_id && developer_id && project_id) {
+        const module = await Modules.findOne({
+          where: { id: module_id },
+          transaction,
+        });
+        if (module) {
+          if (req.user.id === module.lead_id) {
+            let developer = await Users.findOne({
+              where: { id: developer_id, role: "Developer" },
+              transaction,
+            });
+
+            if (developer) {
+              developer = await Developers.findOne({
+                where: {
+                  module_id,
+                  project_id,
+                  user_id: developer_id,
+                },
+                transaction,
+              });
+              if (developer) {
+                await Developers.destroy({
+                  where: {
+                    module_id,
+                    project_id,
+                    user_id: developer_id,
+                  },
+                  transaction,
+                });
+                res.send({
+                  status: true,
+                  message: "Developer removed successfully",
+                });
+              } else {
+                next(
+                  createError(404, "Developer does not have access to document")
+                );
+              }
+            } else {
+              next(createError(404, "Developer not found"));
+            }
+          } else {
+            next(createError(403, "Only module lead can remove developers"));
+          }
+        } else {
+          next(createError(404, "Module not found"));
+        }
+      } else {
+        next(createError(400, "Insufficient data"));
+      }
+    });
+  } catch (err) {
+    next(createError(500, err));
+  }
+};
+
+exports.getAllDevelopersOfModule = async (req, res, next) => {
+  try {
+    await sequelize.transaction(async (transaction) => {
+      // Your code here
+      const { module_id, project_id = 1 } = req.query;
+      if (module_id && project_id) {
+        const module = await Modules.findOne({
+          where: { id: module_id },
+          transaction,
+        });
+
+        if (module) {
+          const developers = await Developers.findAll({
+            where: { module_id, project_id },
+            include: [
+              {
+                model: Users,
+                attributes: {
+                  exclude: ["password"],
+                },
+              },
+            ],
+            transaction,
+          });
+
+          res.send({
+            status: true,
+            message: "Developers fetched successfully",
+            data: developers,
+          });
+        } else {
+          next(createError(404, "Module not found"));
+        }
+      } else {
+        next(createError(400, "Insufficient data"));
       }
     });
   } catch (err) {

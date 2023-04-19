@@ -88,28 +88,30 @@ exports.login = async (req, res, next) => {
 exports.register = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {
-      const { fullName, email, password, role } = req.body;
+      const { fullName, email, password } = req.body;
 
       if (isValidEmail(email) && isValidPassword(password)) {
         const userData = {
-          fullName,
+          name: fullName,
           email,
           password: await bcrypt.hash(password, 12),
-          role,
+          role: "Module Lead",
         };
 
-        const user = await Users.findOrCreate({
-          where: {
-            email: email,
-          },
-          defaults: userData,
+        const user = await Users.findOne({
+          where: { email: email },
           transaction,
         });
 
-        if (user) {
-          res.send({ status: true, message: "User registered successfully" });
+        if (!user) {
+          const user = await Users.create(userData, { transaction });
+          if (user) {
+            res.send({ status: true, message: "User registered successfully" });
+          } else {
+            next(createError(500, "User registration failed"));
+          }
         } else {
-          next(createError(500, "User registration failed"));
+          next(createError(409, "User already exists"));
         }
       } else {
         next(createError(400, "Invalid email or password"));

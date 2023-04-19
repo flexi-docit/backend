@@ -1,17 +1,12 @@
 const moduleTags = [];
 
-const getRandomPair = (min, max) => {
-  let num1 = Math.floor(Math.random() * (max - min + 1) + min);
-  let num2 = Math.floor(Math.random() * (max - min + 1) + min);
-  return [num1, num2];
-};
-
-for (let i = 1; i <= 5; i++) {
-  const [min, max] = getRandomPair(1, 5);
-  moduleTags.push({
-    module_id: min,
-    tag_id: max,
-  });
+for (let i = 0; i < 5; i++) {
+  for (let j = 0; j < 5; j++) {
+    moduleTags.push({
+      module_id: i + 1,
+      tag_id: j + 1,
+    });
+  }
 }
 
 module.exports = moduleTags;
