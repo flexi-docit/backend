@@ -53,7 +53,7 @@ router.get(
 // update module details by id
 router.patch(
   "/:id",
-  authMiddlewere(["Team Lead"]),
+  authMiddlewere(["Team Lead", "Module Lead"]),
   moduleControllers.updateModuleById
 );
 

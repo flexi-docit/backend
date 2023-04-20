@@ -194,12 +194,15 @@ exports.verifyEmail = async (req, res, next) => {
             }
           );
 
-          const emailQueue = require("../utils/queues/email.queue.js");
+          // const emailQueue = require("../utils/queues/email.queue.js");
 
-          emailQueue.add({
-            to: user.email,
-            token,
-          });
+          // emailQueue.add({
+          //   to: user.email,
+          //   token,
+          // });
+
+          const { sendResetPassword } = require("../config/nodemailer.js");
+          await sendResetPassword(user.email, token);
 
           res.send({
             status: true,

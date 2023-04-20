@@ -14,23 +14,26 @@ exports.createModule = async (req, res, next) => {
   try {
     await sequelize.transaction(async (transaction) => {
       // data extraction and basic validation
-      const { name, description, project_id, module_lead_id, tagList } =
-        req.body;
+      const {
+        name,
+        description,
+        project_id = 1,
+        module_lead_id,
+        tags,
+      } = req.body;
 
       if (
         name &&
         name.trim().length > 0 &&
         description &&
         description.trim().length > 0 &&
-        project_id &&
-        project_id > 0 &&
         module_lead_id &&
         module_lead_id > 0 &&
-        tagList &&
-        Array.isArray(tagList)
+        tags &&
+        Array.isArray(tags)
       ) {
         // fetch project details, list of tags(if present or not) and module lead data(user)
-        const [projectModule, tags, module_lead] = await Promise.all([
+        const [projectModule, tagList, module_lead] = await Promise.all([
           await Projects.findOne({
             where: { id: project_id },
             transaction,
@@ -39,7 +42,7 @@ exports.createModule = async (req, res, next) => {
           await Tags.findAll({
             where: {
               id: {
-                [Op.in]: tagList,
+                [Op.in]: tags,
               },
             },
             transaction,
@@ -53,7 +56,7 @@ exports.createModule = async (req, res, next) => {
           }),
         ]);
 
-        if (projectModule && module_lead && tags.length === tagList.length) {
+        if (projectModule && module_lead && tagList.length === tags.length) {
           const moduleData = await Modules.create(
             {
               name: name,
@@ -65,7 +68,7 @@ exports.createModule = async (req, res, next) => {
           );
 
           await ModuleTags.bulkCreate(
-            tagList.map((tag_id) => {
+            tags.map((tag_id) => {
               return {
                 tag_id: tag_id,
                 module_id: moduleData.id,
